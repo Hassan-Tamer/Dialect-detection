@@ -36,6 +36,7 @@ class utils:
                 return
             if len(audio) < trim * 2  * 60 * 1000:
                 print(f"The audio is less than {trim * 2} minutes long.")
+                print("Deleting the file.")
                 os.remove(file_path)
                 return
             
