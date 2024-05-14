@@ -2,6 +2,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_io as tfio
 import numpy as np
+from silence_tensorflow import silence_tensorflow
 
 @tf.function
 def load_wav_16k_mono(filename):
@@ -22,6 +23,7 @@ def predict(model,yamnet_model,wav_file):
     return y
 
 if __name__ == "__main__":
+    silence_tensorflow()
     yamnet_model_handle = 'https://tfhub.dev/google/yamnet/1'
     yamnet_model = hub.load(yamnet_model_handle)
     model = tf.keras.models.load_model('yamnet_model.h5')

@@ -37,20 +37,22 @@ def segment_audio(name,input_file, output_dir):
 X = []
 y = []
 
-path = '.././audio/'
+path = '/home/hassan/dataset/'
 dialects = natsorted(os.listdir(path))
 print(dialects)
 
 for i,dialect in enumerate(dialects):
+    os.makedirs('Segmented/'+dialect, exist_ok=True)
     tot = 0
     full_path = path + dialect
     audios = natsorted(os.listdir(full_path))
     for j,audio in enumerate(audios):
-        if tot > 65:
+        if tot > 120:
             break
         wav_file = full_path + '/' + audio
+        outdir = 'Segmented/'+dialect
         try:
-            segment_audio(audio,wav_file, 'Segmented')
+            segment_audio(audio,wav_file, outdir)
         except Exception as e:
             print(e)
             print("ERROR: ", dialect, " AUDIO: ", audio)

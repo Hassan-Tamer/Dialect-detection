@@ -12,8 +12,8 @@ class utils:
         list_dir = os.listdir(path)
         length = 0
         for url in list_dir:
-            if url.endswith('.wav'):
-                audio = AudioSegment.from_file(url, format="wav")
+            if url.endswith('.wav'):                
+                audio = AudioSegment.from_file(path+url, format="wav")
                 length += len(audio)
         if verbose:
             print(f"Total length of all wav files in the directory: {length/1000/60} minutes")

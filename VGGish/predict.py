@@ -1,4 +1,5 @@
 from torchvggish import vggish, vggish_input
+from silence_tensorflow import silence_tensorflow
 import numpy as np
 import tensorflow as tf
 
@@ -20,6 +21,7 @@ def predict(model,wav_file):
     return y
 
 if __name__ == "__main__":
+    silence_tensorflow()
     wav_file = '1.wav'
     model = tf.keras.models.load_model('VGGish_model.h5')
     y = predict(model,'1.wav')
