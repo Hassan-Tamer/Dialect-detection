@@ -5,6 +5,25 @@ from pytube import YouTube
 
 class utils:
 
+    def get_total_dataset_duration(self, path ,verbose=False):
+        """
+        Returns the total length of all the wav files in all directories in the given path
+        """
+        dialects = os.listdir(path)
+        dict_dialects = {}
+        for dialect in dialects:
+            dir_path = path + dialect + "/"
+            length = self.get_total_duration(dir_path,False)
+            if verbose:
+                print(f"{dialect}: {length} minutes")
+            dict_dialects[dialect] = length
+            
+
+        if verbose:
+            print(dict_dialects)
+        return dict_dialects
+            
+
     def get_total_duration(self, path ,verbose=False):
         """
         Returns the total length of all the wav files in the directory
@@ -27,6 +46,7 @@ class utils:
         try:
             video = YouTube(url)
             stream = video.streams.filter(only_audio=True).first()
+            print(f"Downloading {video.title}")
             file_path = stream.download(filename=f"{video.title}.mp4")
             print(f"{video.title} is downloaded in WAV format")
             try:
@@ -46,8 +66,9 @@ class utils:
             trimmed_file_path = f"{video.title}.wav"
             trimmed_audio.export(trimmed_file_path, format="wav")
             print(f"Trimmed audio saved as {trimmed_file_path}")
-        except KeyError:
+        except Exception as e:
             print("Unable to fetch video information. Please check the video URL or your network connection.")
+            print(e)
     
     def download_playlist(self,URL_PLAYLIST,trim=3):
         """

@@ -47,7 +47,7 @@ for i,dialect in enumerate(dialects):
     full_path = path + dialect
     audios = natsorted(os.listdir(full_path))
     for j,audio in enumerate(audios):
-        if tot > 120:
+        if tot > 300:
             break
         wav_file = full_path + '/' + audio
         outdir = 'Segmented/'+dialect

@@ -61,3 +61,5 @@ if __name__ == '__main__':
     file_path = 'y.pkl'
     with open(file_path, 'wb') as f:
         pickle.dump(y, f)
+
+    print("DONE")
