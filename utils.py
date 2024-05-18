@@ -20,7 +20,8 @@ class utils:
             
 
         if verbose:
-            print(dict_dialects)
+            # print(dict_dialects)
+            pass
         return dict_dialects
             
 
