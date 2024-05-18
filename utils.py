@@ -1,11 +1,10 @@
-import os 
+import os
 from pydub import AudioSegment
-from pytube import Playlist
-from pytube import YouTube
+from pytube import Playlist, YouTube
+from spleeter.separator import Separator
 
 class utils:
-
-    def get_total_dataset_duration(self, path ,verbose=False):
+    def get_total_dataset_duration(self, path, verbose=False):
         """
         Returns the total length of all the wav files in all directories in the given path
         """
@@ -13,32 +12,30 @@ class utils:
         dict_dialects = {}
         for dialect in dialects:
             dir_path = path + dialect + "/"
-            length = self.get_total_duration(dir_path,False)
+            length = self.get_total_duration(dir_path, False)
             if verbose:
                 print(f"{dialect}: {length} minutes")
             dict_dialects[dialect] = length
-            
 
         if verbose:
             print(dict_dialects)
         return dict_dialects
-            
 
-    def get_total_duration(self, path ,verbose=False):
+    def get_total_duration(self, path, verbose=False):
         """
         Returns the total length of all the wav files in the directory
         """
         list_dir = os.listdir(path)
         length = 0
         for url in list_dir:
-            if url.endswith('.wav'):                
-                audio = AudioSegment.from_file(path+url, format="wav")
+            if url.endswith('.wav'):
+                audio = AudioSegment.from_file(path + url, format="wav")
                 length += len(audio)
         if verbose:
-            print(f"Total length of all wav files in the directory: {length/1000/60} minutes")
-        return length/1000/60
-    
-    def download_video(self,url,trim=3):
+            print(f"Total length of all wav files in the directory: {length / 1000 / 60} minutes")
+        return length / 1000 / 60
+
+    def download_video(self, url, trim=3):
         """
         Downloads the video from the given URL and trims the audio by {trim} minutes from the start and end
         trim: int, default=3
@@ -54,23 +51,27 @@ class utils:
             except FileNotFoundError:
                 print("Error: File not found")
                 return
-            if len(audio) < trim * 2  * 60 * 1000:
+            if len(audio) < trim * 2 * 60 * 1000:
                 print(f"The audio is less than {trim * 2} minutes long.")
                 print("Deleting the file.")
                 os.remove(file_path)
                 return
-            
+
             start_time = trim * 60 * 1000  # Convert trim minutes to milliseconds
             end_time = len(audio) - (trim * 60 * 1000)
             trimmed_audio = audio[start_time:end_time]
             trimmed_file_path = f"{video.title}.wav"
             trimmed_audio.export(trimmed_file_path, format="wav")
             print(f"Trimmed audio saved as {trimmed_file_path}")
+
+            # Clean the audio using Spleeter
+            self.clean_audio(trimmed_file_path)
+
         except Exception as e:
             print("Unable to fetch video information. Please check the video URL or your network connection.")
             print(e)
-    
-    def download_playlist(self,URL_PLAYLIST,trim=3):
+
+    def download_playlist(self, URL_PLAYLIST, trim=3):
         """
         Downloads all the videos in the playlist and trims the audio by {trim} minutes from the start and end
         trim: int, default=3
@@ -80,9 +81,25 @@ class utils:
         urls = []
         for url in playlist:
             urls.append(url)
-            
+
         for i, url in enumerate(urls):
-            print(f"Downloading video {i+1} of {len(urls)}")
+            print(f"Downloading video {i + 1} of {len(urls)}")
             print(url)
-            self.download_video(url,trim)
+            self.download_video(url, trim)
             print("\n\n")
+
+    def clean_audio(self, file_path):
+        """
+        Cleans the audio file using Spleeter to separate vocals and accompaniment
+        """
+        separator = Separator('spleeter:2stems')
+        output_path = os.path.splitext(file_path)[0] + "_spleeter"
+        try:
+            separator.separate_to_file(file_path, output_path)
+            print(f"Audio cleaned and saved to {output_path}")
+        except Exception as e:
+            print(f"Error occurred while cleaning audio: {e}")
+
+# Example usage:
+# utils_instance = utils()
+# utils_instance.download_playlist("YOUR_PLAYLIST_URL", trim=3)
