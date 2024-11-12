@@ -20,4 +20,4 @@ Initial models yielded ~80% training accuracy but showed a generalization gap in
 
 Exploring transformer-based models (e.g., Wav2Vec) to improve accuracy by capturing long-range temporal patterns and enhancing noise robustness.
 
-For more details, see the [full paper](link-to-paper.pdf).
+For more details, see the [full paper](deep_learning_final_project.pdf).
